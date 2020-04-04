@@ -1,12 +1,23 @@
 <template>
-  <div class="card-container" v-bind:class="setCardStyling()" :style="height" @click="doToggle()">
-    <div class="card">
-      <div class="date">
-        <div style="width: 10px" />12th June 2019 - 6:03PM
-      </div>
-      <div
-        class="description"
-      >Lorem ipsum dolor sit amet, consectetur adipiscing elit. Fusce mollis mi eget purus rhoncus consectetur. Phasellus egestas vitae neque quis ornare. Nullam ligula est, congue nec rhoncus et, feugiat ac risus. Nullam a aliquam massa. Class aptent taciti sociosqu ad litora torquent per conubia nostra, per inceptos himenaeos. In lorem arcu, volutpat sed dolor fringilla, sagittis consequat quam. Praesent id hendrerit dolor, non imperdiet ligula. Integer luctus vitae nisl eget luctus. Cras euismod rhoncus pulvinar. Sed faucibus tortor at nibh ultricies hendrerit non eleifend velit. In imperdiet lacinia sem, pulvinar cursus lectus tincidunt a. In mollis tincidunt nunc, non mollis purus pellentesque non. Proin ac arcu ac elit suscipit maximus sed non sapien. Vivamus a elementum sem. Sed scelerisque, arcu nec luctus tempus, felis risus vulputate erat, in pellentesque nunc sapien at justo. Donec et semper turpis.</div>
+  <div
+    class="card"
+    :style="height"
+    v-bind:class="setCardStyling()"
+    @click="doToggle()"
+  >
+    <div class="date">
+      <div class="padding" />
+      &#128336; {{ date }}
+    </div>
+
+    <div class="summary" v-show="!toggled">
+      <div class="padding" />
+      {{ summary }}
+    </div>
+
+    <div class="description" v-show="toggled">
+      <div class="padding" />
+      {{ description }}
     </div>
   </div>
 </template>
@@ -15,64 +26,58 @@
 export default {
   data: () => {
     return {
+      height: {},
       toggled: false,
-      height: {}
     };
   },
-  props: ["top", "bottom", "position"],
+  props: ["position", "date", "summary", "description"],
   methods: {
     setCardStyling() {
-      const setToTop = this.top;
-      const setToBottom = this.bottom;
-
       const setToLeft = this.position === "left";
       const setToRight = this.position === "right";
 
       return {
-        top: setToTop,
-        bottom: setToBottom,
         left: setToLeft,
-        right: setToRight
+        right: setToRight,
       };
     },
     doToggle() {
       const expandHeight = !this.toggled;
 
       if (expandHeight) {
-        const styling = {
-          height: "500px"
+        this.height = {
+          "min-height": "300px",
         };
-        this.height = styling;
         this.toggled = true;
       } else {
         this.height = {};
         this.toggled = false;
       }
-    }
-  }
+    },
+  },
 };
 </script>
 
 <style scoped>
-.card-container {
-  width: 50.7%;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  height: 200px;
-  transition: height 0.5s;
-}
-
 .card {
-  width: 89%;
-  height: 96%;
-  transition: width 0.5s, height 0.5s;
+  display: inline-flex;
+  transition: min-height 1s ease;
+  min-height: 100px;
+  width: 50%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: space-evenly;
+  background-color: #52796f;
+  border-radius: 20px;
+  margin-top: 40px;
+  margin-bottom: 40px;
+  padding: 20px;
   margin-left: 10px;
   margin-right: 10px;
-  /* background-color: #ed6a5a; */
-  /* -webkit-box-shadow: 11px 10px 5px 6px rgba(209, 209, 209, 1);
-  -moz-box-shadow: 11px 10px 5px 6px rgba(209, 209, 209, 1);
-  box-shadow: 11px 10px 5px 6px rgba(209, 209, 209, 1); */
+  -webkit-box-shadow: 5px 7px 10px 0px rgba(23, 32, 33, 1);
+  -moz-box-shadow: 5px 7px 10px 0px rgba(23, 32, 33, 1);
+  box-shadow: 5px 7px 10px 0px rgba(23, 32, 33, 1);
 }
 
 .card:hover {
@@ -80,20 +85,49 @@ export default {
 }
 
 .card .date {
+  color: #292f36;
   width: 100%;
-  height: 35%;
   display: flex;
   justify-content: flex-start;
   align-items: center;
-  /* background-color: #e6ebe0; */
-  font-size: 20px;
-  text-transform: uppercase;
+  font-weight: 600;
+}
+
+.card .summary {
+  display: flex;
+  font-size: 25px;
+  align-self: flex-start;
+  width: 100%;
+  font-weight: 600;
+  color: #292f36;
+  letter-spacing: 0.5px;
 }
 
 .card .description {
-  padding: 10px;
-  height: 50%;
-  overflow: hidden;
+  margin-top: 20px;
+  padding: 0px 10px 10px 10px;
+  overflow: auto;
+  color: #292f36;
+  font-size: 18px;
+}
+
+/* Scrollbar */
+::-webkit-scrollbar {
+  width: 10px;
+}
+::-webkit-scrollbar-track {
+  background: #f1f1f1;
+}
+::-webkit-scrollbar-thumb {
+  background: #888;
+  height: 20px;
+}
+::-webkit-scrollbar-thumb:hover {
+  background: #555;
+}
+
+.padding {
+  width: 10px;
 }
 
 .left {
@@ -104,11 +138,14 @@ export default {
   align-self: flex-end;
 }
 
-.top {
-  margin-top: 40px;
-}
+@media only screen and (max-width: 600px) {
+  .card {
+    width: 80%;
+  }
 
-.bottom {
-  margin-bottom: 40px;
+  .left,
+  .right {
+    align-self: center;
+  }
 }
 </style>
