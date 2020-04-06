@@ -1,10 +1,5 @@
 <template>
-  <div
-    class="card"
-    :style="height"
-    v-bind:class="setCardStyling()"
-    @click="doToggle()"
-  >
+  <div class="card" :style="height" v-bind:class="setCardStyling()" @click="doToggle()">
     <div class="date">
       <div class="padding" />
       &#128336; {{ date }}
@@ -26,8 +21,8 @@
 export default {
   data: () => {
     return {
-      height: {},
-      toggled: false,
+      height: { height: "100px", "min-height": "100px" },
+      toggled: false
     };
   },
   props: ["position", "date", "summary", "description"],
@@ -38,7 +33,7 @@ export default {
 
       return {
         left: setToLeft,
-        right: setToRight,
+        right: setToRight
       };
     },
     doToggle() {
@@ -46,23 +41,23 @@ export default {
 
       if (expandHeight) {
         this.height = {
-          "min-height": "300px",
+          height: "300px",
+          "min-height": "300px"
         };
         this.toggled = true;
       } else {
-        this.height = {};
+        this.height = { height: "100px", "min-height": "100px" };
         this.toggled = false;
       }
-    },
-  },
+    }
+  }
 };
 </script>
 
 <style scoped>
 .card {
   display: inline-flex;
-  transition: min-height 1s ease;
-  min-height: 100px;
+  transition: all 1s ease;
   width: 50%;
   display: flex;
   flex-direction: column;
