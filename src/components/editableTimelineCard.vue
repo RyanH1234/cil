@@ -1,36 +1,31 @@
 <template>
-  <div
-    class="card"
-    :style="height"
-    v-bind:class="setCardStyling()"
-    @click="doToggle()"
-  >
+  <div class="card" v-bind:class="setCardStyling()">
     <div class="date">
       <div class="padding" />
       &#128336; {{ date }}
     </div>
 
-    <div class="summary" v-show="!toggled">
+    <div class="summary">
       <div class="padding" />
-      {{ summary }}
+      <input value="Add Your Title Here" />
     </div>
 
-    <div class="description" v-show="toggled">
+    <div class="description">
       <div class="padding" />
-      {{ description }}
+      <textarea>Add Your Description Here</textarea>
+    </div>
+
+    <div class="actions">
+      <div class="padding" />
+      <Button class="save" @click="saveTimelineCard()">Save</Button>
+      <Button class="cancel" @click="removeTimelineCard()"> Cancel </Button>
     </div>
   </div>
 </template>
 
 <script>
 export default {
-  data: () => {
-    return {
-      height: {},
-      toggled: false,
-    };
-  },
-  props: ["position", "date", "summary", "description"],
+  props: ["position", "date"],
   methods: {
     setCardStyling() {
       const setToLeft = this.position === "left";
@@ -38,31 +33,23 @@ export default {
 
       return {
         left: setToLeft,
-        right: setToRight,
+        right: setToRight
       };
     },
-    doToggle() {
-      const expandHeight = !this.toggled;
-
-      if (expandHeight) {
-        this.height = {
-          "min-height": "300px",
-        };
-        this.toggled = true;
-      } else {
-        this.height = {};
-        this.toggled = false;
-      }
+    saveTimelineCard() {
+      
     },
-  },
+    removeTimelineCard() {
+
+    }
+  }
 };
 </script>
 
 <style scoped>
 .card {
   display: inline-flex;
-  transition: min-height 1s ease;
-  min-height: 100px;
+  transition: all 1s ease;
   width: 50%;
   display: flex;
   flex-direction: column;
@@ -80,10 +67,6 @@ export default {
   box-shadow: 5px 7px 10px 0px rgba(23, 32, 33, 1);
 }
 
-.card:hover {
-  cursor: pointer;
-}
-
 .card .date {
   color: #292f36;
   width: 100%;
@@ -91,6 +74,7 @@ export default {
   justify-content: flex-start;
   align-items: center;
   font-weight: 600;
+  margin-bottom: 20px;
 }
 
 .card .summary {
@@ -101,29 +85,75 @@ export default {
   font-weight: 600;
   color: #292f36;
   letter-spacing: 0.5px;
+  margin-bottom: 20px;
+}
+
+.summary input {
+  display: flex;
+  font-size: 25px;
+  align-self: flex-start;
+  width: 60%;
+  font-weight: 600;
+  color: #292f36;
+  letter-spacing: 0.5px;
+  background-color: #52796f;
+  border: none;
+  border-bottom: 1px solid #292f36;
+}
+
+.summary input:focus {
+  outline: none;
 }
 
 .card .description {
-  margin-top: 20px;
-  padding: 0px 10px 10px 10px;
-  overflow: auto;
-  color: #292f36;
-  font-size: 18px;
+  width: 100%;
+  margin-bottom: 15px;
+  display: flex;
 }
 
-/* Scrollbar */
-::-webkit-scrollbar {
-  width: 10px;
+.description textarea {
+  width: 100%;
+  min-width: 95%;
+  height: 100px;
+  background-color: #649488;
+  border-radius: 10px;
+  padding: 10px;
+  border: none;
+  font-size: 18px;
+  color: #292f36;
+  font-family: Avenir, Helvetica, Arial, sans-serif;
 }
-::-webkit-scrollbar-track {
-  background: #f1f1f1;
+
+
+textarea:focus {
+  outline: none;
 }
-::-webkit-scrollbar-thumb {
-  background: #888;
-  height: 20px;
+
+.card .actions {
+  width: 100%;
+  display: flex;
 }
-::-webkit-scrollbar-thumb:hover {
-  background: #555;
+
+.actions button {
+  border: none;
+  padding: 10px;
+  font-size: 14px;
+  border-radius: 5px;
+  color: #292f36;
+  font-weight: 600;
+}
+
+.actions .cancel {
+  margin-left: 10px;
+}
+
+.actions button:hover {
+  opacity: 1;
+  cursor: pointer;
+}
+
+.actions button:focus {
+  outline: none;
 }
 
 .padding {
@@ -146,6 +176,14 @@ export default {
   .left,
   .right {
     align-self: center;
+  }
+
+  .summary input {
+    width: 100%;
+  }
+
+  .card .actions {
+    justify-content: center;
   }
 }
 </style>

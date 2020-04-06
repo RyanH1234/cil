@@ -4,6 +4,15 @@
 
     <div class="timeline-start">1st April 2020</div>
 
+    <editableTimelineCard
+      v-for="editableCard in editableCards"
+      :key="editableCard.id"
+      :position="editableCard.position"
+      :date="editableCard.date"
+      :summary="editableCard.summary"
+      :description="editableCard.description"
+    />
+
     <timelineCard
       v-for="card in cards"
       :key="card.id"
@@ -19,10 +28,12 @@
 
 <script>
 import timelineCard from "./timelineCard.vue";
+import editableTimelineCard from "./editableTimelineCard";
 
 export default {
   data: () => {
     return {
+      editableCards: [],
       cards: [
         {
           id: 0,
@@ -52,48 +63,96 @@ export default {
     };
   },
   components: {
-    timelineCard
+    timelineCard,
+    editableTimelineCard
   },
   methods: {
+    formatMonth(month) {
+      const monthNames = [
+        "January",
+        "February",
+        "March",
+        "April",
+        "May",
+        "June",
+        "July",
+        "August",
+        "September",
+        "October",
+        "November",
+        "December"
+      ];
+      const formattedMonth = monthNames[month];
+      return formattedMonth;
+    },
+    formatDate(date) {
+      const unitDigit = date % 10;
+      const tensDigit = date % 100;
+
+      if(unitDigit == 1 && tensDigit !== 11) {
+        return date + "st";
+      } 
+
+      if(unitDigit == 2 && tensDigit !== 12) {
+        return date + "nd";
+      }
+      if(unitDigit == 3 && tensDigit != 13) {
+        return date + "rd";
+      }
+
+      return date + "th";
+    },
+    retrieveDate() {
+      const date = new Date();
+
+      let day = date.getDate();
+      day = this.formatDate(day);
+
+      let month = date.getMonth();
+      month = this.formatMonth(month);
+
+      const year = date.getFullYear();
+
+      return day + " " + month + " " + year;   
+    },
     addTimelineCard() {
+      const editableCards = this.editableCards;
+      const numberOfEditableCards = editableCards.length;
+
+      if (numberOfEditableCards === 1) {
+        console.error("Cannot add more than one card at a time.");
+        return;
+      }
+
       const timelineCards = this.cards;
-      const noOfCards = timelineCards.length;
+      const firstCard = timelineCards[0];
+      const latestPosition = firstCard.position;
+      const lastCard = [...timelineCards].pop();
+      const latestID = lastCard.id;
 
-      let newCard = {};
+      const date = this.retrieveDate();
 
-      if (noOfCards === 0) {
-        newCard = {
-          id: 0,
-          position: "left",
-          date: "",
+      let editableCard = {};
+
+      if (latestPosition === "left") {
+        editableCard = {
+          id: latestID + 1,
+          position: "right",
+          date: date,
           summary: "",
           description: ""
         };
       } else {
-        const latestCard = timelineCards[0];
-        const latestID = latestCard.id;
-        const latestPosition = latestCard.position;
-
-        if (latestPosition === "left") {
-          newCard = {
-            id: latestID + 1,
-            position: "right",
-            date: "",
-            summary: "",
-            description: ""
-          };
-        } else {
-          newCard = {
-            id: latestID + 1,
-            position: "left",
-            date: "",
-            summary: "",
-            description: ""
-          };
-        }
+        editableCard = {
+          id: latestID + 1,
+          position: "left",
+          date: date,
+          summary: "",
+          description: ""
+        };
       }
 
-      this.cards = [newCard, ...timelineCards];
+      this.editableCards = [editableCard, ...editableCards];
     }
   }
 };
