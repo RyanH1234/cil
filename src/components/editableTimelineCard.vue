@@ -7,12 +7,12 @@
 
     <div class="summary">
       <div class="padding" />
-      <input value="Add Your Title Here" />
+      <input v-model="summary" />
     </div>
 
     <div class="description">
       <div class="padding" />
-      <textarea>Add Your Description Here</textarea>
+      <textarea v-model="description" />
     </div>
 
     <div class="actions">
@@ -25,7 +25,13 @@
 
 <script>
 export default {
-  props: ["position", "date"],
+  data: () => {
+    return {
+      summary: "Add Your Title Here",
+      description: "Add Your Description Here"
+    }
+  },
+  props: ["position", "date", "id"],
   methods: {
     setCardStyling() {
       const setToLeft = this.position === "left";
@@ -36,11 +42,17 @@ export default {
         right: setToRight
       };
     },
-    saveTimelineCard() {
-      
-    },
     removeTimelineCard() {
-
+      this.$emit("removeEditableCard");
+    },
+    saveTimelineCard() {
+      const card = {
+        id: this.id,
+        date: this.date,
+        summary: this.summary,
+        description: this.description
+      }
+      this.$emit("saveEditableCard", card);
     }
   }
 };
