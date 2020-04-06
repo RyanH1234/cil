@@ -1,6 +1,6 @@
 <template>
   <div class="timeline-container">
-    <div class="add-timeline-card" >&#43;</div>
+    <div class="add-timeline-card" @click="addTimelineCard()">&#43;</div>
 
     <div class="timeline-start">1st April 2020</div>
 
@@ -25,7 +25,7 @@ export default {
     return {
       cards: [
         {
-          id: "0",
+          id: 0,
           position: "left",
           date: "30th June 2019",
           summary: "Installation @ Rolvenden",
@@ -33,7 +33,7 @@ export default {
             "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Fusce mollis mi eget purus rhoncus consectetur. Phasellus egestas vitae neque quis ornare. Nullam ligula est, congue nec rhoncus et, feugiat ac risus. Nullam a aliquam massa. Class aptent taciti sociosqu ad litora torquent per conubia nostra, per inceptos himenaeos. In lorem arcu, volutpat sed dolor fringilla, sagittis consequat quam. Praesent id hendrerit dolor, non imperdiet ligula. Integer luctus vitae nisl eget luctus. Cras euismod rhoncus pulvinar. Sed faucibus tortor at nibh ultricies hendrerit non eleifend velit. In imperdiet lacinia sem, pulvinar cursus lectus tincidunt a. In mollis tincidunt nunc, non mollis purus pellentesque non. Proin ac arcu ac elit suscipit maximus sed non sapien. Vivamus a elementum sem. Sed scelerisque, arcu nec luctus tempus, felis risus vulputate erat, in pellentesque nunc sapien at justo. Donec et semper turpis.",
         },
         {
-          id: "1",
+          id: 1,
           position: "right",
           date: "14th June 2019",
           summary: "Follow up talk w. Rolvenden",
@@ -41,7 +41,7 @@ export default {
             "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Fusce mollis mi eget purus rhoncus consectetur. Phasellus egestas vitae neque quis ornare. Nullam ligula est, congue nec rhoncus et, feugiat ac risus. Nullam a aliquam massa. Class aptent taciti sociosqu ad litora torquent per conubia nostra, per inceptos himenaeos. In lorem arcu, volutpat sed dolor fringilla, sagittis consequat quam. Praesent id hendrerit dolor, non imperdiet ligula. Integer luctus vitae nisl eget luctus. Cras euismod rhoncus pulvinar. Sed faucibus tortor at nibh ultricies hendrerit non eleifend velit. In imperdiet lacinia sem, pulvinar cursus lectus tincidunt a. In mollis tincidunt nunc, non mollis purus pellentesque non. Proin ac arcu ac elit suscipit maximus sed non sapien. Vivamus a elementum sem. Sed scelerisque, arcu nec luctus tempus, felis risus vulputate erat, in pellentesque nunc sapien at justo. Donec et semper turpis.",
         },
         {
-          id: "2",
+          id: 2,
           position: "left",
           date: "12th June 2019",
           summary: "Sit down w. Rolvenden",
@@ -54,6 +54,48 @@ export default {
   components: {
     timelineCard,
   },
+  methods: {
+    addTimelineCard() {
+      const timelineCards = this.cards;
+      const noOfCards = timelineCards.length;
+
+      let newCard = {};
+
+      if(noOfCards === 0) {
+        newCard = {
+          id: 0,
+          position: "left",
+          date: "",
+          summary: "",
+          description: ""
+        }
+      } else {
+        const latestCard = timelineCards[0];
+        const latestID = latestCard.id;
+        const latestPosition = latestCard.position;
+
+        if(latestPosition === "left") {
+          newCard = {
+            id: latestID + 1,
+            position: "right",
+            date: "",
+            summary: "",
+            description: ""
+          }
+        } else {
+          newCard = {
+            id: latestID + 1,
+            position: "left",
+            date: "",
+            summary: "",
+            description: ""
+          }
+        }
+      }
+
+      this.cards = [newCard, ...timelineCards];
+    }
+  }
 };
 </script>
 
@@ -72,17 +114,25 @@ export default {
 
 .timeline-start {
   font-weight: 600;
-  color: #d4d4d4;
   align-self: center;
   margin-top: 50px;
+  color: white;
+  padding: 20px;
+  opacity: 0.6;
+  border-radius: 20px;
+  border: 1px solid white;
 }
 
 .timeline-end {
   font-weight: 600;
-  color: #d4d4d4;
   align-self: center;
   height: 20px;
   margin-bottom: 50px;
+  color: white;
+  padding: 20px;
+  opacity: 0.6;
+  border-radius: 20px;
+  border: 1px solid white;
 }
 
 .add-timeline-card {
