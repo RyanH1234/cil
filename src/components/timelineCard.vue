@@ -2,7 +2,9 @@
   <div class="card" :style="height" v-bind:class="setCardStyling()">
     <div class="date">
       <div class="padding" />
-      &#128336; {{ dateString }}
+      &#128336; 
+      {{ dateString }}
+      <!-- <datepicker /> -->
     </div>
 
     <div class="summary" v-show="!toggled">
@@ -17,23 +19,28 @@
 
     <div class="toggle" @click="doToggle()">
       <div class="padding" />
-      <Button v-if="toggled"> Hide Description </Button>
-      <Button v-else> Show Description </Button>
+      <Button v-if="toggled">Hide Description</Button>
+      <Button v-else>Show Description</Button>
     </div>
   </div>
 </template>
 
 <script>
+// import Datepicker from "vuejs-datepicker";
+
 export default {
   data: function() {
     return {
       height: { height: "150px", "min-height": "150px" },
       toggled: false,
       updatedSummary: this.summary,
-      updatedDescription: this.description,
+      updatedDescription: this.description
     };
   },
   props: ["position", "date", "dateString", "summary", "description"],
+  components: {
+    // Datepicker
+  },
   methods: {
     setCardStyling() {
       const setToLeft = this.position === "left";
@@ -57,7 +64,7 @@ export default {
         this.height = { height: "150px", "min-height": "150px" };
         this.toggled = false;
       }
-    },
+    }
   },
   watch: {
     updatedSummary() {
@@ -65,7 +72,7 @@ export default {
     },
     updatedDescription() {
       this.$emit("updateDescription");
-    }, 
+    }
   }
 };
 </script>
@@ -140,8 +147,8 @@ export default {
 }
 
 .card .description::-webkit-scrollbar {
-    width: 0px; 
-    background: transparent; 
+  width: 0px;
+  background: transparent;
 }
 
 .description textarea {
@@ -222,6 +229,5 @@ export default {
   .summary input {
     width: 100%;
   }
-
 }
 </style>
