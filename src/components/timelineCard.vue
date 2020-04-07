@@ -1,5 +1,5 @@
 <template>
-  <div class="card" :style="height" v-bind:class="setCardStyling()" @click="doToggle()">
+  <div class="card" :style="height" v-bind:class="setCardStyling()">
     <div class="date">
       <div class="padding" />
       &#128336; {{ dateString }}
@@ -7,22 +7,30 @@
 
     <div class="summary" v-show="!toggled">
       <div class="padding" />
-      {{ summary }}
+      <input v-model="updatedSummary" />
     </div>
 
     <div class="description" v-show="toggled">
       <div class="padding" />
-      {{ description }}
+      <textarea v-model="updatedDescription" />
+    </div>
+
+    <div class="toggle" @click="doToggle()">
+      <div class="padding" />
+      <Button v-if="toggled"> Hide Description </Button>
+      <Button v-else> Show Description </Button>
     </div>
   </div>
 </template>
 
 <script>
 export default {
-  data: () => {
+  data: function() {
     return {
-      height: { height: "100px", "min-height": "100px" },
-      toggled: false
+      height: { height: "150px", "min-height": "150px" },
+      toggled: false,
+      updatedSummary: this.summary,
+      updatedDescription: this.description,
     };
   },
   props: ["position", "date", "dateString", "summary", "description"],
@@ -46,10 +54,18 @@ export default {
         };
         this.toggled = true;
       } else {
-        this.height = { height: "100px", "min-height": "100px" };
+        this.height = { height: "150px", "min-height": "150px" };
         this.toggled = false;
       }
-    }
+    },
+  },
+  watch: {
+    updatedSummary() {
+      this.$emit("updateSummary");
+    },
+    updatedDescription() {
+      this.$emit("updateDescription");
+    }, 
   }
 };
 </script>
@@ -75,10 +91,6 @@ export default {
   box-shadow: 5px 7px 10px 0px rgba(23, 32, 33, 1);
 }
 
-.card:hover {
-  cursor: pointer;
-}
-
 .card .date {
   color: #292f36;
   width: 100%;
@@ -86,6 +98,10 @@ export default {
   justify-content: flex-start;
   align-items: center;
   font-weight: 600;
+}
+
+.card .date:hover {
+  cursor: pointer;
 }
 
 .card .summary {
@@ -98,12 +114,72 @@ export default {
   letter-spacing: 0.5px;
 }
 
+.summary input {
+  display: flex;
+  font-size: 25px;
+  align-self: flex-start;
+  width: 60%;
+  font-weight: 600;
+  color: #292f36;
+  letter-spacing: 0.5px;
+  background-color: #52796f;
+  border: none;
+}
+
+.summary input:focus {
+  outline: none;
+}
+
 .card .description {
   margin-top: 20px;
   padding: 0px 10px 10px 10px;
   overflow: auto;
   color: #292f36;
   font-size: 18px;
+  width: 95%;
+}
+
+.card .description::-webkit-scrollbar {
+    width: 0px; 
+    background: transparent; 
+}
+
+.description textarea {
+  padding: 5px;
+  width: 100%;
+  max-width: 100%;
+  max-height: 200px;
+  height: 200px;
+  background-color: #649488;
+  border-radius: 10px;
+  border: none;
+  font-size: 18px;
+  color: #292f36;
+  font-family: Avenir, Helvetica, Arial, sans-serif;
+}
+
+.card .toggle {
+  display: flex;
+  align-items: center;
+  justify-content: flex-start;
+  width: 100%;
+}
+
+.toggle button {
+  border: none;
+  padding: 10px;
+  font-size: 14px;
+  border-radius: 5px;
+  color: #292f36;
+  font-weight: 600;
+}
+
+.toggle button:hover {
+  cursor: pointer;
+}
+
+.toggle button:focus {
+  outline: none;
 }
 
 /* Scrollbar */
@@ -142,5 +218,10 @@ export default {
   .right {
     align-self: center;
   }
+
+  .summary input {
+    width: 100%;
+  }
+
 }
 </style>
