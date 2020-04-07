@@ -91,6 +91,10 @@ export default {
   margin-bottom: 20px;
 }
 
+.card .date:hover {
+  cursor: pointer;
+}
+
 .card .summary {
   display: flex;
   font-size: 25px;

@@ -61,27 +61,34 @@ export default {
       });
       return latestID + 1;
     },
+    sortByDate(cards) {
+      const sortedCards = cards.sort((d1, d2) => d1.date - d2.date);
+      return sortedCards;
+    },
+    setCardPosition(cards) {
+      const orderedCards = cards.map((card, index) => {
+        let pos = card.position;
+        if (index % 2) {
+          pos = "right";
+        } else {
+          pos = "left";
+        }
+
+        return {
+          ...card,
+          ...{ position: pos }
+        };
+      });
+
+      return orderedCards;
+    },
     saveEditableCard(card) {
       this.editableCards = [];
 
       let cards = this.cards;
       cards = [...cards, card];
-      cards = cards.sort((d1, d2) => d1.date - d2.date);
-
-      cards = cards.map((card, index) => {
-        let pos = card.position;
-        if(index % 2) {
-          pos = "right";
-        } else {
-          pos = "left"
-        }
-
-        return {
-          ...card,
-          ...{"position": pos}
-        }
-
-      })
+      cards = this.sortByDate(cards);
+      cards = this.setCardPosition(cards);
 
       this.cards = cards;
     },
@@ -131,6 +138,16 @@ export default {
 
       return day + " " + month + " " + year;
     },
+    buildTimelineCard(id, position, date, dateString) {
+      return {
+        id: id,
+        position: position,
+        date: date,
+        dateString: dateString,
+        summary: "",
+        description: ""
+      }
+    },
     addTimelineCard() {
       const editableCards = this.editableCards;
       const numberOfEditableCards = editableCards.length;
@@ -140,46 +157,28 @@ export default {
       }
 
       const timelineCards = this.cards;
+      
       const date = new Date();
       const dateString = this.retrieveDate(date);
-      let cardID = 0;
+      
+      const noOfTimelineCards = timelineCards.length;
       let editableCard = {};
 
-      console.dir(timelineCards);
+      if(noOfTimelineCards === 0) {
+        editableCard = this.buildTimelineCard(0, "left", date, dateString);
+      }
 
-      if (timelineCards.length === 0) {
-        editableCard = {
-          id: cardID,
-          position: "left",
-          date: date,
-          dateString: dateString,
-          summary: "",
-          description: ""
-        };
-      } else {
+      if(noOfTimelineCards !== 0) {
         const firstCard = timelineCards[0];
         const latestPosition = firstCard.position;
-
         const cardID = this.getNewID(timelineCards);
 
-        if (latestPosition === "left") {
-          editableCard = {
-            id: cardID,
-            position: "right",
-            dateString: dateString,
-            date: date,
-            summary: "",
-            description: ""
-          };
-        } else {
-          editableCard = {
-            id: cardID,
-            position: "left",
-            dateString: dateString,
-            date: date,
-            summary: "",
-            description: ""
-          };
+        if(latestPosition === "left") {
+          editableCard = this.buildTimelineCard(cardID, "right", date, dateString);
+        }
+
+        if(latestPosition === "right") {
+          editableCard = this.buildTimelineCard(cardID, "left", date, dateString);
         }
       }
 
