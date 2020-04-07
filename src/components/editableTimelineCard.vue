@@ -2,7 +2,7 @@
   <div class="card" v-bind:class="setCardStyling()">
     <div class="date">
       <div class="padding" />
-      &#128336; {{ date }}
+      &#128336; {{ dateString }}
     </div>
 
     <div class="summary">
@@ -31,7 +31,7 @@ export default {
       description: "Add Your Description Here"
     }
   },
-  props: ["position", "date", "id"],
+  props: ["position", "date", "id", "dateString"],
   methods: {
     setCardStyling() {
       const setToLeft = this.position === "left";
@@ -49,8 +49,10 @@ export default {
       const card = {
         id: this.id,
         date: this.date,
+        dateString: this.dateString,
         summary: this.summary,
-        description: this.description
+        description: this.description,
+        position: this.position,
       }
       this.$emit("saveEditableCard", card);
     }

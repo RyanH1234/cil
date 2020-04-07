@@ -2,7 +2,7 @@
   <div class="card" :style="height" v-bind:class="setCardStyling()" @click="doToggle()">
     <div class="date">
       <div class="padding" />
-      &#128336; {{ date }}
+      &#128336; {{ dateString }}
     </div>
 
     <div class="summary" v-show="!toggled">
@@ -25,7 +25,7 @@ export default {
       toggled: false
     };
   },
-  props: ["position", "date", "summary", "description"],
+  props: ["position", "date", "dateString", "summary", "description"],
   methods: {
     setCardStyling() {
       const setToLeft = this.position === "left";

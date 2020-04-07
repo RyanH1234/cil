@@ -10,6 +10,7 @@
       :id="editableCard.id"
       :position="editableCard.position"
       :date="editableCard.date"
+      :dateString="editableCard.dateString"
       :summary="editableCard.summary"
       :description="editableCard.description"
       @removeEditableCard="removeEditableCard"
@@ -21,6 +22,7 @@
       :key="card.id"
       :position="card.position"
       :date="card.date"
+      :dateString="card.dateString"
       :summary="card.summary"
       :description="card.description"
     />
@@ -37,32 +39,7 @@ export default {
   data: () => {
     return {
       editableCards: [],
-      // cards: [
-      //   {
-      //     id: 0,
-      //     position: "left",
-      //     date: "30th June 2019",
-      //     summary: "Installation @ Rolvenden",
-      //     description:
-      //       "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Fusce mollis mi eget purus rhoncus consectetur. Phasellus egestas vitae neque quis ornare. Nullam ligula est, congue nec rhoncus et, feugiat ac risus. Nullam a aliquam massa. Class aptent taciti sociosqu ad litora torquent per conubia nostra, per inceptos himenaeos. In lorem arcu, volutpat sed dolor fringilla, sagittis consequat quam. Praesent id hendrerit dolor, non imperdiet ligula. Integer luctus vitae nisl eget luctus. Cras euismod rhoncus pulvinar. Sed faucibus tortor at nibh ultricies hendrerit non eleifend velit. In imperdiet lacinia sem, pulvinar cursus lectus tincidunt a. In mollis tincidunt nunc, non mollis purus pellentesque non. Proin ac arcu ac elit suscipit maximus sed non sapien. Vivamus a elementum sem. Sed scelerisque, arcu nec luctus tempus, felis risus vulputate erat, in pellentesque nunc sapien at justo. Donec et semper turpis."
-      //   },
-        // {
-        //   id: 1,
-        //   position: "right",
-        //   date: "14th June 2019",
-        //   summary: "Follow up talk w. Rolvenden",
-        //   description:
-        //     "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Fusce mollis mi eget purus rhoncus consectetur. Phasellus egestas vitae neque quis ornare. Nullam ligula est, congue nec rhoncus et, feugiat ac risus. Nullam a aliquam massa. Class aptent taciti sociosqu ad litora torquent per conubia nostra, per inceptos himenaeos. In lorem arcu, volutpat sed dolor fringilla, sagittis consequat quam. Praesent id hendrerit dolor, non imperdiet ligula. Integer luctus vitae nisl eget luctus. Cras euismod rhoncus pulvinar. Sed faucibus tortor at nibh ultricies hendrerit non eleifend velit. In imperdiet lacinia sem, pulvinar cursus lectus tincidunt a. In mollis tincidunt nunc, non mollis purus pellentesque non. Proin ac arcu ac elit suscipit maximus sed non sapien. Vivamus a elementum sem. Sed scelerisque, arcu nec luctus tempus, felis risus vulputate erat, in pellentesque nunc sapien at justo. Donec et semper turpis."
-        // },
-        // {
-        //   id: 2,
-        //   position: "left",
-        //   date: "12th June 2019",
-        //   summary: "Sit down w. Rolvenden",
-        //   description:
-        //     "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Fusce mollis mi eget purus rhoncus consectetur. Phasellus egestas vitae neque quis ornare. Nullam ligula est, congue nec rhoncus et, feugiat ac risus. Nullam a aliquam massa. Class aptent taciti sociosqu ad litora torquent per conubia nostra, per inceptos himenaeos. In lorem arcu, volutpat sed dolor fringilla, sagittis consequat quam. Praesent id hendrerit dolor, non imperdiet ligula. Integer luctus vitae nisl eget luctus. Cras euismod rhoncus pulvinar. Sed faucibus tortor at nibh ultricies hendrerit non eleifend velit. In imperdiet lacinia sem, pulvinar cursus lectus tincidunt a. In mollis tincidunt nunc, non mollis purus pellentesque non. Proin ac arcu ac elit suscipit maximus sed non sapien. Vivamus a elementum sem. Sed scelerisque, arcu nec luctus tempus, felis risus vulputate erat, in pellentesque nunc sapien at justo. Donec et semper turpis."
-        // }
-      // ]
+      cards: []
     };
   },
   components: {
@@ -85,11 +62,28 @@ export default {
       return latestID + 1;
     },
     saveEditableCard(card) {
-      console.dir(card);
+      this.editableCards = [];
 
-      // order card
+      let cards = this.cards;
+      cards = [...cards, card];
+      cards = cards.sort((d1, d2) => d1.date - d2.date);
 
-      // set position
+      cards = cards.map((card, index) => {
+        let pos = card.position;
+        if(index % 2) {
+          pos = "right";
+        } else {
+          pos = "left"
+        }
+
+        return {
+          ...card,
+          ...{"position": pos}
+        }
+
+      })
+
+      this.cards = cards;
     },
     formatMonth(month) {
       const monthNames = [
@@ -126,9 +120,7 @@ export default {
 
       return date + "th";
     },
-    retrieveDate() {
-      const date = new Date();
-
+    retrieveDate(date) {
       let day = date.getDate();
       day = this.formatDate(day);
 
@@ -144,20 +136,23 @@ export default {
       const numberOfEditableCards = editableCards.length;
 
       if (numberOfEditableCards === 1) {
-        console.error("Can only edit one card at a time.");
         return;
       }
 
       const timelineCards = this.cards;
-      const date = this.retrieveDate();
+      const date = new Date();
+      const dateString = this.retrieveDate(date);
       let cardID = 0;
       let editableCard = {};
+
+      console.dir(timelineCards);
 
       if (timelineCards.length === 0) {
         editableCard = {
           id: cardID,
           position: "left",
           date: date,
+          dateString: dateString,
           summary: "",
           description: ""
         };
@@ -167,13 +162,11 @@ export default {
 
         const cardID = this.getNewID(timelineCards);
 
-        // TODO - need to pass in the actual datetime string too
-        const date = this.retrieveDate();
-
         if (latestPosition === "left") {
           editableCard = {
             id: cardID,
             position: "right",
+            dateString: dateString,
             date: date,
             summary: "",
             description: ""
@@ -182,6 +175,7 @@ export default {
           editableCard = {
             id: cardID,
             position: "left",
+            dateString: dateString,
             date: date,
             summary: "",
             description: ""
@@ -217,9 +211,11 @@ export default {
   opacity: 0.6;
   border-radius: 20px;
   border: 1px solid white;
+  margin-bottom: 10px;
 }
 
 .timeline-end {
+  margin-top: 10px;
   font-weight: 600;
   align-self: center;
   height: 20px;
