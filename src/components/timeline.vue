@@ -7,13 +7,15 @@
     <timelineCard
       v-for="card in cards"
       :key="card.id"
+      :id="card.id"
       :position="card.position"
       :date="card.date"
-      :dateString="card.dateString"
       :summary="card.summary"
       :description="card.description"
       @updateSummary="updateSummary"
       @updateDescription="updateDescription"
+      @updateDate="updateDate"
+      @cancel="removeCard"
     />
 
     <div class="timeline-end">1st April 2016</div>
@@ -51,7 +53,7 @@ export default {
         return cards;
       }
 
-      const sortedCards = cards.sort((d1, d2) => d1.date - d2.date);
+      const sortedCards = cards.sort((d1, d2) => d1.date - d2.date).reverse();
       return sortedCards;
     },
     setCardPosition(cards) {
@@ -71,58 +73,11 @@ export default {
 
       return orderedCards;
     },
-    formatMonth(month) {
-      const monthNames = [
-        "January",
-        "February",
-        "March",
-        "April",
-        "May",
-        "June",
-        "July",
-        "August",
-        "September",
-        "October",
-        "November",
-        "December"
-      ];
-      const formattedMonth = monthNames[month];
-      return formattedMonth;
-    },
-    formatDate(date) {
-      const unitDigit = date % 10;
-      const tensDigit = date % 100;
-
-      if (unitDigit == 1 && tensDigit !== 11) {
-        return date + "st";
-      }
-
-      if (unitDigit == 2 && tensDigit !== 12) {
-        return date + "nd";
-      }
-      if (unitDigit == 3 && tensDigit != 13) {
-        return date + "rd";
-      }
-
-      return date + "th";
-    },
-    retrieveDate(date) {
-      let day = date.getDate();
-      day = this.formatDate(day);
-
-      let month = date.getMonth();
-      month = this.formatMonth(month);
-
-      const year = date.getFullYear();
-
-      return day + " " + month + " " + year;
-    },
-    formatNewTimelineCard(id, position, date, dateString) {
+    formatNewTimelineCard(id, position, date) {
       return {
         id: id,
         position: position,
         date: date,
-        dateString: dateString,
         summary: "Add Your Title Here",
         description: "Add Your Description Here"
       };
@@ -131,14 +86,12 @@ export default {
       const noOfTimelineCards = timelineCards.length;
 
       const date = new Date();
-      const dateString = this.retrieveDate(date);
 
       if (noOfTimelineCards === 0) {
         const newTimelineCard = this.formatNewTimelineCard(
           0,
           "left",
           date,
-          dateString
         );
         return newTimelineCard;
       }
@@ -152,7 +105,6 @@ export default {
           cardID,
           "right",
           date,
-          dateString
         );
         return newTimelineCard;
       }
@@ -161,7 +113,6 @@ export default {
         cardID,
         "left",
         date,
-        dateString
       );
       return newTimelineCard;
     },
@@ -184,6 +135,39 @@ export default {
     },
     updateDescription() {
       console.dir("update description....");
+    },
+    updateDate(payload) {
+      const cardID = payload.id;
+      const newDate = payload.date;
+
+      const timelineCards = this.cards;
+
+      // TODO - this can be replaced with a call to the API
+      let updatedCards = timelineCards.map(card => {
+        const id = card.id;
+        if(id === cardID) {
+          const updatedCard = {
+            ...card,
+            ...{date: newDate}
+          }
+          return updatedCard
+        }
+
+        return card;
+      });
+
+      updatedCards = this.sortByDate(updatedCards);
+      updatedCards = this.setCardPosition(updatedCards);
+
+      this.cards=updatedCards;
+    },
+    removeCard(payload) {
+      const id = payload.id;
+      const timelineCards = this.cards;
+
+      let updatedCards = timelineCards.filter(card => card.id !== id);
+      
+      this.cards = updatedCards;
     }
   }
 };

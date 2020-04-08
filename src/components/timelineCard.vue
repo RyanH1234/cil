@@ -3,8 +3,7 @@
     <div class="date">
       <div class="padding" />
       &#128336; 
-      {{ dateString }}
-      <!-- <datepicker /> -->
+      <timelineDatepicker :date="date" @updateDate="updateDate" />
     </div>
 
     <div class="summary" v-show="!toggled">
@@ -17,16 +16,17 @@
       <textarea v-model="updatedDescription" />
     </div>
 
-    <div class="toggle" @click="doToggle()">
+    <div class="toggle" >
       <div class="padding" />
-      <Button v-if="toggled">Hide Description</Button>
-      <Button v-else>Show Description</Button>
+      <Button v-if="toggled" @click="doToggle()" >Hide Description</Button>
+      <Button v-else @click="doToggle()" >Show Description</Button>
+      <Button class="cancel" @click="cancel()" >Cancel</Button>
     </div>
   </div>
 </template>
 
 <script>
-// import Datepicker from "vuejs-datepicker";
+import timelineDatepicker from "./timelineDatepicker";
 
 export default {
   data: function() {
@@ -37,10 +37,10 @@ export default {
       updatedDescription: this.description
     };
   },
-  props: ["position", "date", "dateString", "summary", "description"],
   components: {
-    // Datepicker
+    timelineDatepicker,
   },
+  props: ["id", "position", "date", "summary", "description"],
   methods: {
     setCardStyling() {
       const setToLeft = this.position === "left";
@@ -56,14 +56,32 @@ export default {
 
       if (expandHeight) {
         this.height = {
-          height: "300px",
+          "height": "300px",
           "min-height": "300px"
         };
         this.toggled = true;
       } else {
-        this.height = { height: "150px", "min-height": "150px" };
+        this.height = { 
+          "height": "150px", 
+          "min-height": "150px" 
+        };
         this.toggled = false;
       }
+    },
+    updateDate(date) {
+      const payload = {
+        "date": date,
+        "id": this.id,
+      }
+      this.$emit("updateDate", payload);
+    },
+    cancel() {
+      console.dir("cancel...");
+      const payload = {
+        "id": this.id
+      };
+
+      this.$emit("cancel", payload);
     }
   },
   watch: {
@@ -187,6 +205,10 @@ export default {
 
 .toggle button:focus {
   outline: none;
+}
+
+.toggle .cancel {
+  margin-left: 10px;
 }
 
 /* Scrollbar */
