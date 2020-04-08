@@ -2,7 +2,7 @@
   <div class="timeline-container">
     <div class="add-timeline-card" @click="addNewTimelineCard()">&#43;</div>
 
-    <div class="timeline-start">1st April 2020</div>
+    <div class="timeline-start">{{ timelineLatest }}</div>
 
     <timelineCard
       v-for="card in cards"
@@ -18,7 +18,7 @@
       @cancel="removeCard"
     />
 
-    <div class="timeline-end">1st April 2016</div>
+    <div class="timeline-end">{{ timelineEarliest }} </div>
   </div>
 </template>
 
@@ -28,13 +28,71 @@ import timelineCard from "./timelineCard.vue";
 export default {
   data: () => {
     return {
-      cards: []
+      cards: [],
+      timelineLatest: "",
+      timelineEarliest: ""
     };
   },
   components: {
     timelineCard
   },
+  mounted() {
+    this.buildTimelineBoundaries();
+  },
   methods: {
+    buildTimelineBoundaries() {
+      const timelineCards = this.cards;
+      const noOfCards = timelineCards.length;
+
+      if(noOfCards === 0) {
+        const now = new Date();
+
+        const lastYear = now.getFullYear() - 1;
+        let oneYearAgo = new Date();
+        oneYearAgo.setFullYear(lastYear);
+
+        this.setBoundaries(now, oneYearAgo);
+        return;
+      }
+
+      if(noOfCards === 1) {
+        const card = timelineCards[0];
+
+        const latest = card.date;
+
+        const earliest = new Date(latest);
+        const previousYear = latest.getFullYear() - 1;
+        earliest.setFullYear(previousYear)
+
+        this.setBoundaries(latest, earliest);
+        return;
+      }
+      
+      const head = timelineCards[0];
+      const tail = timelineCards[noOfCards - 1];
+      const latest = head.date;
+      const earliest = tail.date;
+      this.setBoundaries(latest, earliest);
+    },
+    setBoundaries(latest, earliest) {
+      const latestDateString = this.formatDate(latest);
+      this.timelineLatest = latestDateString;
+      
+      const earliestDateString = this.formatDate(earliest);
+      this.timelineEarliest = earliestDateString;
+    },
+    formatDate(date) {
+      const day = date.getDate();
+      
+      const months = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"];
+      let month = date.getMonth();
+      month = months[month];
+
+      const year = date.getFullYear();
+
+      const dateString = day + " " + month + " " + year;
+      return dateString;
+    },
     getNewID(cards) {
       let latestID = 0;
       cards.map(card => {
@@ -115,8 +173,9 @@ export default {
       let updatedCards = [newTimelineCard, ...timelineCards];
       updatedCards = this.sortCardsByDate(updatedCards);
       updatedCards = this.setCardPosition(updatedCards);
-
       this.cards = updatedCards;
+
+      this.buildTimelineBoundaries();
     },
     addNewTimelineCard() {
       const newTimelineCard = this.buildNewTimelineCard();
