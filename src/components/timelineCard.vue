@@ -20,6 +20,7 @@
       <div class="padding" />
       <Button v-if="toggled" @click="doToggle()" >Hide Description</Button>
       <Button v-else @click="doToggle()" >Show Description</Button>
+
       <Button class="cancel" @click="cancel()" >Cancel</Button>
     </div>
   </div>
@@ -55,16 +56,20 @@ export default {
       const expandHeight = !this.toggled;
 
       if (expandHeight) {
-        this.height = {
+        const expandedHeight = {
           "height": "300px",
           "min-height": "300px"
         };
+
+        this.height = expandedHeight;
         this.toggled = true;
       } else {
-        this.height = { 
+        const collapsedHeight = { 
           "height": "150px", 
           "min-height": "150px" 
         };
+
+        this.height = collapsedHeight;
         this.toggled = false;
       }
     },
@@ -76,7 +81,6 @@ export default {
       this.$emit("updateDate", payload);
     },
     cancel() {
-      console.dir("cancel...");
       const payload = {
         "id": this.id
       };

@@ -46,7 +46,7 @@ export default {
       });
       return latestID + 1;
     },
-    sortByDate(cards) {
+    sortCardsByDate(cards) {
       const noOfCards = cards.length;
 
       if (noOfCards <= 1) {
@@ -82,17 +82,14 @@ export default {
         description: "Add Your Description Here"
       };
     },
-    buildNewTimelineCard(timelineCards) {
+    buildNewTimelineCard() {
+      const timelineCards = this.cards;
       const noOfTimelineCards = timelineCards.length;
 
       const date = new Date();
 
       if (noOfTimelineCards === 0) {
-        const newTimelineCard = this.formatNewTimelineCard(
-          0,
-          "left",
-          date,
-        );
+        const newTimelineCard = this.formatNewTimelineCard(0, "left", date);
         return newTimelineCard;
       }
 
@@ -104,29 +101,32 @@ export default {
         const newTimelineCard = this.formatNewTimelineCard(
           cardID,
           "right",
-          date,
+          date
         );
         return newTimelineCard;
       }
 
-      const newTimelineCard = this.formatNewTimelineCard(
-        cardID,
-        "left",
-        date,
-      );
+      const newTimelineCard = this.formatNewTimelineCard(cardID, "left", date);
       return newTimelineCard;
     },
-    addNewTimelineCard() {
+    updateTimelineCards(newTimelineCard) {
       const timelineCards = this.cards;
 
-      const newTimelineCard = this.buildNewTimelineCard(timelineCards);
-
-      this.updateTimelineCards(timelineCards, newTimelineCard);
-    },
-    updateTimelineCards(timelineCards, newTimelineCard) {
       let updatedCards = [newTimelineCard, ...timelineCards];
-      updatedCards = this.sortByDate(updatedCards);
+      updatedCards = this.sortCardsByDate(updatedCards);
       updatedCards = this.setCardPosition(updatedCards);
+
+      this.cards = updatedCards;
+    },
+    addNewTimelineCard() {
+      const newTimelineCard = this.buildNewTimelineCard();
+      this.updateTimelineCards(newTimelineCard);
+    },
+    removeCard(payload) {
+      const id = payload.id;
+      const timelineCards = this.cards;
+
+      let updatedCards = timelineCards.filter(card => card.id !== id);
 
       this.cards = updatedCards;
     },
@@ -142,32 +142,18 @@ export default {
 
       const timelineCards = this.cards;
 
-      // TODO - this can be replaced with a call to the API
-      let updatedCards = timelineCards.map(card => {
-        const id = card.id;
-        if(id === cardID) {
-          const updatedCard = {
-            ...card,
-            ...{date: newDate}
-          }
-          return updatedCard
-        }
+      let card = timelineCards.filter(card => card.id === cardID);
+      card = card[0];
 
-        return card;
-      });
+      const removeCardPayload = { id: cardID };
+      this.removeCard(removeCardPayload);
 
-      updatedCards = this.sortByDate(updatedCards);
-      updatedCards = this.setCardPosition(updatedCards);
+      const updatedCard = {
+        ...card,
+        ...{ date: newDate }
+      };
 
-      this.cards=updatedCards;
-    },
-    removeCard(payload) {
-      const id = payload.id;
-      const timelineCards = this.cards;
-
-      let updatedCards = timelineCards.filter(card => card.id !== id);
-      
-      this.cards = updatedCards;
+      this.updateTimelineCards(updatedCard);
     }
   }
 };
