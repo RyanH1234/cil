@@ -1,10 +1,15 @@
 <template>
   <div class="login">
     Username
-    <div class="username"> <input type="text" /> </div>
-    Password
-    <div class="password"> <input type="password" /> </div>
-    <div class="login-btn"> <Button @click="goToClients()"> Go! </Button> </div>
+    <div class="username">
+      <input type="text" />
+    </div>Password
+    <div class="password">
+      <input type="password" />
+    </div>
+    <div class="login-btn">
+      <Button @click="goToClients()">Login</Button>
+    </div>
   </div>
 </template>
 
@@ -12,10 +17,10 @@
 export default {
   methods: {
     goToClients() {
-      this.$router.push({name:'Clients'})
+      this.$router.push({ name: "Clients" });
     }
   }
-}
+};
 </script>
 
 <style scoped>
@@ -30,6 +35,7 @@ export default {
   background-color: #52796f;
   color: #292f36;
   font-weight: 600;
+  font-size: 16px;
   -webkit-box-shadow: 5px 7px 10px 0px rgba(23, 32, 33, 1);
   -moz-box-shadow: 5px 7px 10px 0px rgba(23, 32, 33, 1);
   box-shadow: 5px 7px 10px 0px rgba(23, 32, 33, 1);
@@ -38,7 +44,7 @@ export default {
 .login .username,
 .login .password {
   width: 100%;
-  display: flex; 
+  display: flex;
   align-items: center;
   justify-content: center;
 }
@@ -60,30 +66,33 @@ export default {
 }
 
 .login input:focus,
-.login-btn Button:focus {
+.login-btn button:focus {
   outline: none;
 }
 
 .login .login-btn {
   width: 100%;
   display: flex;
-  justify-content: flex-end;
-  margin-right: 18%;
+  justify-content: center;
+  margin-top: 20px;
 }
 
-.login-btn Button {
+.login-btn button {
   border: none;
   background-color: white;
   border-radius: 5px;
-  font-size: 18px;
-  background-color: rgb(52, 68, 77);
-  color: white;
+  font-size: 22px;
+  background-color: inherit;
+  font-weight: 600;
+  color: #292f36;
+  padding: 4px;
   padding: 15px;
+  background-color: #6a9e91;
 }
 
-.login-btn Button:hover {
+.login-btn button:hover {
   cursor: pointer;
-  background-color: rgb(66, 87, 99);
+  background-color: #5e8a7f;
 }
 
 @media only screen and (max-width: 600px) {

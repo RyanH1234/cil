@@ -1,20 +1,44 @@
 <template>
   <div class="clients">
-    <div class="add-client-card">&#43;</div>
-    <div class="client">
-      <div class="name">
-        <input type="text" value="Rolvenden" />
-      </div>
-      <div class="go-to" @click="goToTimeline()">...</div>
-    </div>
+    <div class="add-client-card" @click="addClient()">&#43;</div>
+    <client v-for="client in clients" :name="client.name" :key="client.id" />
   </div>
 </template>
 
 <script>
+import client from "@/components/client.vue";
+
 export default {
+  data: () => {
+    return {
+      clients: [{ id: 0, name: "Rolvenden" }]
+    };
+  },
+  components: {
+    client
+  },
   methods: {
-    goToTimeline() {
-      this.$router.push({ name: "Timeline" });
+    getNewID(clients) {
+      let latestID = 0;
+      clients.map(card => {
+        const id = card.id;
+
+        if (id > latestID) {
+          latestID = id;
+        }
+      });
+      return latestID + 1;
+    },
+    addClient() {
+      const clients = this.clients;
+      const nextID = this.getNewID(clients);
+      
+      const newClient = [{
+        id: nextID,
+        name: "Client Name"
+      }]
+
+      this.clients = [...newClient, ...clients];
     }
   }
 };
@@ -29,53 +53,6 @@ export default {
   align-items: center;
   overflow: auto;
   margin-top: 20px;
-}
-
-.client {
-  margin-top: 40px;
-  margin-bottom: 40px;
-  width: 50%;
-  min-height: 200px;
-  border-radius: 5px;
-  background-color: #52796f;
-  -webkit-box-shadow: 5px 7px 10px 0px rgba(23, 32, 33, 1);
-  -moz-box-shadow: 5px 7px 10px 0px rgba(23, 32, 33, 1);
-  box-shadow: 5px 7px 10px 0px rgba(23, 32, 33, 1);
-  color: #292f36;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-}
-
-.client .name {
-  width: 60%;
-}
-
-.name input {
-  width: 100%;
-  font-size: 50px;
-  font-weight: 600;
-  color: inherit;
-  letter-spacing: 0.5px;
-  background-color: inherit;
-  border: none;
-}
-
-.name input:focus {
-  outline: none;
-}
-
-.client .go-to {
-  width: 20%;
-  display: flex;
-  align-items: center;
-  justify-content: flex-end;
-  font-size: 40px;
-  color: inherit;
-}
-
-.client .go-to:hover {
-  cursor: pointer;
 }
 
 .add-client-card {
@@ -101,15 +78,5 @@ export default {
 .add-client-card:hover {
   opacity: 1;
   cursor: pointer;
-}
-
-@media only screen and (max-width: 600px) {
-  .client {
-    width: 80%;
-  }
-
-  .name input {
-    font-size: 40px;
-  }
 }
 </style>
