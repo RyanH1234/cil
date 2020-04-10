@@ -4,9 +4,19 @@
     <div class="username"> <input type="text" /> </div>
     Password
     <div class="password"> <input type="password" /> </div>
-    <div class="login-btn"> <Button> Login </Button> </div>
+    <div class="login-btn"> <Button @click="goToClients()"> Login </Button> </div>
   </div>
 </template>
+
+<script>
+export default {
+  methods: {
+    goToClients() {
+      this.$router.push({name:'Clients'})
+    }
+  }
+}
+</script>
 
 <style scoped>
 .login {

@@ -1,19 +1,14 @@
 <template>
   <div id="app">
-    <timeline />
-    <!-- <login /> -->
+    <router-view></router-view>
   </div>
 </template>
 
 <script>
-import timeline from "./components/timeline.vue";
-// import login from "./components/login.vue";
 
 export default {
   name: "App",
   components: {
-    timeline,
-    // login
   }
 };
 </script>
