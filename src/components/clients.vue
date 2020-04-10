@@ -5,9 +5,7 @@
       <div class="name">
         <input type="text" value="Rolvenden" />
       </div>
-      <div class="go-to" @click="goToTimeline()">
-        &#707;
-      </div>
+      <div class="go-to" @click="goToTimeline()">...</div>
     </div>
   </div>
 </template>
@@ -16,7 +14,7 @@
 export default {
   methods: {
     goToTimeline() {
-      this.$router.push({name:'Timeline'})
+      this.$router.push({ name: "Timeline" });
     }
   }
 };
@@ -29,18 +27,21 @@ export default {
   display: flex;
   flex-direction: column;
   align-items: center;
+  overflow: auto;
+  margin-top: 20px;
 }
 
 .client {
   margin-top: 40px;
   margin-bottom: 40px;
   width: 50%;
-  height: 200px;
+  min-height: 200px;
   border-radius: 5px;
   background-color: #52796f;
   -webkit-box-shadow: 5px 7px 10px 0px rgba(23, 32, 33, 1);
   -moz-box-shadow: 5px 7px 10px 0px rgba(23, 32, 33, 1);
   box-shadow: 5px 7px 10px 0px rgba(23, 32, 33, 1);
+  color: #292f36;
   display: flex;
   justify-content: center;
   align-items: center;
@@ -52,14 +53,12 @@ export default {
 
 .name input {
   width: 100%;
-  font-size: 30px;
-  text-transform: uppercase;
+  font-size: 50px;
   font-weight: 600;
-  color: white;
+  color: inherit;
   letter-spacing: 0.5px;
-  background-color: inherit ;
+  background-color: inherit;
   border: none;
-  border-bottom: 1px solid white;
 }
 
 .name input:focus {
@@ -72,7 +71,7 @@ export default {
   align-items: center;
   justify-content: flex-end;
   font-size: 40px;
-  color: white;
+  color: inherit;
 }
 
 .client .go-to:hover {
@@ -104,10 +103,13 @@ export default {
   cursor: pointer;
 }
 
-
 @media only screen and (max-width: 600px) {
   .client {
     width: 80%;
+  }
+
+  .name input {
+    font-size: 40px;
   }
 }
 </style>

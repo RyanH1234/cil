@@ -4,7 +4,7 @@
     <div class="username"> <input type="text" /> </div>
     Password
     <div class="password"> <input type="password" /> </div>
-    <div class="login-btn"> <Button @click="goToClients()"> Login </Button> </div>
+    <div class="login-btn"> <Button @click="goToClients()"> Go! </Button> </div>
   </div>
 </template>
 
@@ -23,14 +23,17 @@ export default {
   width: 50%;
   height: 50%;
   border-radius: 5px;
-  border: 1px solid white;
   display: flex;
   flex-direction: column;
   align-items: center;
   justify-content: center;
-  background-color: rgb(43, 60, 70);
-  color: white;
-  }
+  background-color: #52796f;
+  color: #292f36;
+  font-weight: 600;
+  -webkit-box-shadow: 5px 7px 10px 0px rgba(23, 32, 33, 1);
+  -moz-box-shadow: 5px 7px 10px 0px rgba(23, 32, 33, 1);
+  box-shadow: 5px 7px 10px 0px rgba(23, 32, 33, 1);
+}
 
 .login .username,
 .login .password {
@@ -47,13 +50,13 @@ export default {
   margin-top: 20px;
   margin-bottom: 20px;
   width: 80%;
-  background-color: #2F3E46;
-  border: 1px solid white;
+  background-color: #6a9e91;
   border-radius: 10px;
-  color: white;
+  color: inherit;
   font-size: 22px;
   padding: 5px;
   text-align: center;
+  font-weight: 600;
 }
 
 .login input:focus,
@@ -61,21 +64,26 @@ export default {
   outline: none;
 }
 
+.login .login-btn {
+  width: 100%;
+  display: flex;
+  justify-content: flex-end;
+  margin-right: 18%;
+}
+
 .login-btn Button {
   border: none;
   background-color: white;
   border-radius: 5px;
-  font-size: 20px;
-  text-transform: uppercase;
-  background-color: #2F3E46;
-  border: 1px solid white;
+  font-size: 18px;
+  background-color: rgb(52, 68, 77);
   color: white;
   padding: 15px;
 }
 
 .login-btn Button:hover {
   cursor: pointer;
-  background-color: rgb(65, 86, 99);
+  background-color: rgb(66, 87, 99);
 }
 
 @media only screen and (max-width: 600px) {

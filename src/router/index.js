@@ -9,7 +9,7 @@ import clients from "@/components/clients.vue";
 Vue.use(VueRouter)
 
 const routes = [
-  { path: "/login", name: "Login", component: login },
+  { path: "/", name: "Login", component: login },
   { path: "/timeline", name: "Timeline", component: timeline },
   { path: "/clients", name: "Clients", component: clients }
 ]
