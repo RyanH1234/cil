@@ -2,24 +2,73 @@
   <div class="login">
     Username
     <div class="username">
-      <input type="text" />
+      <input type="text" v-model="username" :style="errStyling" />
     </div>Password
     <div class="password">
-      <input type="password" />
+      <input type="password" v-model="password" :style="errStyling" />
     </div>
     <div class="login-btn">
-      <Button @click="goToClients()">Login</Button>
+      <Button @click="login()" v-if="!loading">Login</Button>
+      <ClipLoader color="#292f36" v-else />
     </div>
   </div>
 </template>
 
 <script>
+import firebase from "firebase";
+import ClipLoader from "vue-spinner/src/ClipLoader.vue";
+
 export default {
+  data: () => {
+    return {
+      username: "",
+      password: "",
+      loading: false,
+      errStyling: {}
+    };
+  },
+  components: {
+    ClipLoader
+  },
   methods: {
+    login() {
+      const username = this.username;
+      const password = this.password;
+      
+      this.loading = true;
+
+      // handles authentication and logging in via firebase
+      firebase
+        .auth()
+        .signInWithEmailAndPassword(username, password)
+        .then(payload => {
+          const user = {
+            email: payload.user.email
+          };
+
+          this.clearError();
+          this.loading = false;
+
+          this.$store.commit("auth_success", user);
+          this.goToClients();
+        })
+        .catch(err => {
+          this.loading = false;
+          this.setError();
+        });
+    },
+    setError() {
+      this.errStyling = {
+        "border": "2px solid #9a2727"
+      }
+    },
+    clearError() {
+      this.errStyling = {};
+    },
     goToClients() {
       this.$router.push({ name: "Clients" });
     }
-  }
+  },
 };
 </script>
 
@@ -39,6 +88,16 @@ export default {
   -webkit-box-shadow: 5px 7px 10px 0px rgba(23, 32, 33, 1);
   -moz-box-shadow: 5px 7px 10px 0px rgba(23, 32, 33, 1);
   box-shadow: 5px 7px 10px 0px rgba(23, 32, 33, 1);
+}
+
+.login .err {
+  margin-bottom: 40px;
+  color: #720c0c;
+  font-size: 18px;
+  width: 80%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
 }
 
 .login .username,
@@ -79,20 +138,18 @@ export default {
 
 .login-btn button {
   border: none;
-  background-color: white;
   border-radius: 5px;
-  font-size: 22px;
-  background-color: inherit;
-  font-weight: 600;
-  color: #292f36;
+  font-size: 16px;
   padding: 4px;
   padding: 15px;
   background-color: #6a9e91;
+  color: #292f36;
+  font-weight: 600;
 }
 
 .login-btn button:hover {
   cursor: pointer;
-  background-color: #5e8a7f;
+  background-color: #6fa597;
 }
 
 @media only screen and (max-width: 600px) {
