@@ -5,11 +5,17 @@
   "scripts": {
     "serve": "vue-cli-service serve",
     "build": "vue-cli-service build",
+    "start": "node server/server.js",
+    "dev": "nodemon server/server.js",
     "lint": "vue-cli-service lint"
   },
   "dependencies": {
+    "body-parser": "^1.19.0",
     "core-js": "^3.6.4",
+    "express": "^4.17.1",
     "firebase": "^7.14.0",
+    "firebase-admin": "^8.10.0",
+    "nodemon": "^2.0.3",
     "vue": "^2.6.11",
     "vue-router": "^3.1.6",
     "vue-spinner": "^1.0.3",

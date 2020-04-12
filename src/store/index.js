@@ -19,6 +19,10 @@ const store = new Vuex.Store({
       const status = state.status;
       const loggedIn = (status === 'success');
       return loggedIn;
+    },
+    getCurrentUserID(state) {
+      const uid = state.user.uid;
+      return uid;
     }
   }
 })

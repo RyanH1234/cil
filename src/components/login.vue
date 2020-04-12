@@ -43,6 +43,7 @@ export default {
         .signInWithEmailAndPassword(username, password)
         .then(payload => {
           const user = {
+            uid: payload.user.uid,
             email: payload.user.email
           };
 
