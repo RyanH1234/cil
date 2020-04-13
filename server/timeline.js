@@ -19,7 +19,6 @@ router.post('/:uid/add_card', function (req, res) {
   timelineCards
     .push(newCard)
     .then((snapshot) => {
-      console.dir(snapshot.key);
       res.send(snapshot.key);
     })
     .catch((err) => {

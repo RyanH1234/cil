@@ -274,7 +274,7 @@ export default {
       axios
         .post(`/timeline/${clientID}/update_card/${cardID}`, updatedCard)
         .catch(err => {
-          console.dir(err);
+          console.error(err);
         });
     },
     updateDate(payload) {

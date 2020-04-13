@@ -89,8 +89,6 @@ export default {
         id: this.id
       };
 
-      console.dir(payload);
-
       this.$emit("delete", payload);
     },
     updateSummary() {
