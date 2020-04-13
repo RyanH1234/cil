@@ -6,6 +6,12 @@ import store from './store';
 
 import * as firebase from "firebase";
 
+import Axios from 'axios';
+
+Vue.prototype.$http = Axios;
+const baseURL = 'http://localhost:3000';
+Axios.defaults.baseURL = baseURL;
+
 Vue.config.productionTip = false
 
 const firebaseConfig = {

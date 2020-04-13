@@ -1,7 +1,8 @@
 <template>
   <div class="client">
+    <div class="save" @click="saveName()" v-if="changed">&#x1f5ab;</div>
     <div class="name">
-      <input type="text" :value="name" />
+      <input type="text" v-model="editedName" @input="nameChanged()" />
     </div>
     <div class="go-to" @click="goToTimeline()">...</div>
   </div>
@@ -9,11 +10,28 @@
 
 <script>
 export default {
-  props: ["name"],
+  data: function() {
+    return {
+      editedName: this.name,
+      changed: false
+    };
+  },
+  props: ["name", "id"],
   methods: {
     goToTimeline() {
       this.$router.push({ name: "Timeline" });
-    }
+    },
+    nameChanged() {
+      this.changed = true;
+    },
+    saveName() {
+      const payload = {
+        id: this.id,
+        name: this.editedName
+      };
+      this.$emit("updateName", payload);
+      this.changed = false;
+    },
   }
 };
 </script>
@@ -33,6 +51,16 @@ export default {
   display: flex;
   justify-content: center;
   align-items: center;
+}
+
+.client .save {
+  font-weight: 600;
+  font-size: 30px;
+  margin-right: 20px;
+}
+
+.client .save {
+  cursor: pointer;
 }
 
 .client .name {
@@ -66,13 +94,19 @@ export default {
   cursor: pointer;
 }
 
+@media (max-width: 1000px) and (min-width: 600px) {
+  .client {
+    width: 80%;
+  }
+}
+
 @media only screen and (max-width: 600px) {
   .client {
     width: 80%;
   }
 
   .name input {
-    font-size: 40px;
+    font-size: 30px;
   }
 }
 </style>

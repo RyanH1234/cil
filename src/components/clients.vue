@@ -1,45 +1,95 @@
 <template>
   <div class="clients">
     <div class="add-client-card" @click="addClient()">&#43;</div>
-    <client v-for="client in clients" :name="client.name" :key="client.id" />
+    <client 
+      v-for="client in clients" 
+      :name="client.name" 
+      :id="client.id"
+      :key="client.id" 
+      @updateName="updateName"
+    />
   </div>
 </template>
 
 <script>
+import axios from "axios";
 import client from "@/components/client.vue";
 
 export default {
   data: () => {
     return {
-      clients: [{ id: 0, name: "Rolvenden" }]
+      clients: []
     };
   },
   components: {
     client
   },
   methods: {
-    getNewID(clients) {
-      let latestID = 0;
-      clients.map(card => {
-        const id = card.id;
+    buildClientList(clientsObj) {
+      const clientIDs = Object.keys(clientsObj);
 
-        if (id > latestID) {
-          latestID = id;
-        }
+      const clients = clientIDs.map(clientID => {
+        let client = clientsObj[clientID];
+        client = {
+          ...client,
+          ...{ id: clientID }
+        };
+        return client;
       });
-      return latestID + 1;
+
+      return clients;
+    },
+    getAllClients() {
+      axios
+        .get("/clients/get_all_clients")
+        .then(resp => {
+          const data = resp.data;
+          const clients = this.buildClientList(data);
+          this.clients = clients;
+        })
+        .catch(err => {
+          console.error(err);
+        });
     },
     addClient() {
       const clients = this.clients;
-      const nextID = this.getNewID(clients);
-      
-      const newClient = [{
-        id: nextID,
-        name: "Client Name"
+      const newClientID = this.postNewClient(newClient);
+
+      let newClient = {
+        name: "Client Name",
+        id: newClientID
+      };
+
+      newClient = [{
+        ...newClient,
+        ...newClientID
       }]
 
       this.clients = [...newClient, ...clients];
+    },
+    postNewClient(newClient) {
+      axios
+        .post('/clients/new_client', newClient)
+        .then(resp => {
+          const newClientID = resp.data;
+          return newClientID;
+        })
+        .catch(err => {
+          console.error(err);
+        });
+    },
+    updateName(payload) {      
+      const { ["id"]: clientID, ...updatedClient} = payload;
+
+      axios
+        .post(`/clients/update_client_name/${clientID}`, updatedClient)
+        .catch(err => {
+          console.error(err);
+        })
     }
+  },
+  mounted() {
+    this.getAllClients();
   }
 };
 </script>
@@ -52,7 +102,6 @@ export default {
   flex-direction: column;
   align-items: center;
   overflow: auto;
-  margin-top: 20px;
 }
 
 .add-client-card {

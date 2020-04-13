@@ -4,8 +4,10 @@ const bodyParser = require('body-parser');
 const clients = require('./clients');
 const timeline = require('./timeline');
 
+const cors = require('cors');
+
 const app = express();
-const port = process.env.PORT || 8080;
+const port = process.env.PORT || 3000;
 
 const admin = require("firebase-admin");
 
@@ -15,6 +17,8 @@ admin.initializeApp({
   credential: admin.credential.cert(serviceAccount),
   databaseURL: "https://mn-cli.firebaseio.com"
 });
+
+app.use(cors());
 
 app.use(bodyParser.urlencoded({ extended: false }));
 app.use(bodyParser.json());

@@ -13,13 +13,14 @@ router.post('/new_client', function (req, res) {
   const db = admin.database();
   const clients = db.ref("clients");
 
-  clients.push(newClient, (err) => {
-    if (err) {
+  clients
+    .push(newClient)
+    .then((snapshot) => {
+      res.send(snapshot.key);
+    })
+    .catch((err) => {
       res.send("Err, new client could not be set");
-    } else {
-      res.send("New client successfully added");
-    }
-  });
+    });
 });
 
 // update client name
@@ -34,14 +35,14 @@ router.post('/update_client_name/:uid', function (req, res) {
   const db = admin.database();
   const client = db.ref("clients").child(clientID);
 
-  client.update(updatedClient, (err) => {
-    if (err) {
-      res.send("Err, could not update client name");
-    } else {
+  client
+    .update(updatedClient)
+    .then(() => {
       res.send("Client name successfully updated");
-    }
-  })
-
+    })
+    .catch((err)=> {
+      res.send("Err, could not update client name");
+    })
 });
 
 // get all clients
@@ -49,11 +50,21 @@ router.get('/get_all_clients', function (req, res) {
   const db = admin.database();
   const clients = db.ref("clients");
 
-  clients.on("value", function(snapshot) {
-    const clients = snapshot.val();
-    res.json(clients);
-  });
+  clients
+    .once("value", (snapshot) => {
+      const exists = (snapshot.val() !== null);
 
+      if (exists) {
+        const clients = snapshot.val();
+        res.json(clients);
+      } else {
+        res.json({});
+      }
+
+    })
+    .catch((err) => {
+      res.send("Could not get all clients");
+    });
 });
 
 module.exports = router;

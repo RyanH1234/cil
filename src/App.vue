@@ -28,4 +28,19 @@ body {
   align-items: center;
   font-family: Avenir, Helvetica, Arial, sans-serif;
 }
+
+/* Scrollbar */
+::-webkit-scrollbar {
+  width: 10px;
+}
+::-webkit-scrollbar-track {
+  background: #f1f1f1;
+}
+::-webkit-scrollbar-thumb {
+  background: #888;
+  height: 20px;
+}
+::-webkit-scrollbar-thumb:hover {
+  background: #555;
+}
 </style>
