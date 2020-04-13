@@ -16,13 +16,15 @@ router.post('/:uid/add_card', function (req, res) {
   const client = db.ref("clients").child(clientID);
   const timelineCards = client.child("timelineCards");
 
-  timelineCards.push(newCard, (err) => {
-    if (err) {
+  timelineCards
+    .push(newCard)
+    .then((snapshot) => {
+      console.dir(snapshot.key);
+      res.send(snapshot.key);
+    })
+    .catch((err) => {
       res.send("Err, new timeline card could not be added");
-    } else {
-      res.send("New timeline card successfully added");
-    }
-  })
+    });
 });
 
 // update timelineCard title/description
@@ -80,10 +82,20 @@ router.get('/:uid/get_all_cards', function (req, res) {
   const client = db.ref("clients").child(clientID);
   const cards = client.child("timelineCards");
 
-  cards.on("value", function(snapshot) {
-    const clients = snapshot.val();
-    res.json(clients);
-  });
+  cards
+    .once("value", (snapshot) => {
+      const exists = (snapshot.val() !== null);
+
+      if(exists) {
+        const cards = snapshot.val();
+        res.json(cards);
+      } else {
+        res.json({});
+      }
+    })
+    .catch((err) => {
+      res.send("Could not get all cards");
+    })
 
 });
 

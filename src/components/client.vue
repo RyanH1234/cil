@@ -19,7 +19,12 @@ export default {
   props: ["name", "id"],
   methods: {
     goToTimeline() {
-      this.$router.push({ name: "Timeline" });
+      const client = {
+        name: this.editedName,
+        id: this.id
+      };
+
+      this.$emit("goToTimeline", client);
     },
     nameChanged() {
       this.changed = true;

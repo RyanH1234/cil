@@ -7,11 +7,15 @@ const store = new Vuex.Store({
   state: {
     status: '',
     user: {},
+    client: {}
   },
   mutations: {
     auth_success(state, user) {
       state.status = 'success';
       state.user = user;
+    },
+    setClient(state, client) {
+      state.client = client;
     }
   },
   getters: {
@@ -23,6 +27,10 @@ const store = new Vuex.Store({
     getCurrentUserID(state) {
       const uid = state.user.uid;
       return uid;
+    },
+    getClient(state) {
+      const client = state.client;
+      return client;
     }
   }
 })

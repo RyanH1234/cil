@@ -1,12 +1,13 @@
 <template>
   <div class="clients">
     <div class="add-client-card" @click="addClient()">&#43;</div>
-    <client 
-      v-for="client in clients" 
-      :name="client.name" 
+    <client
+      v-for="client in clients"
+      :name="client.name"
       :id="client.id"
-      :key="client.id" 
+      :key="client.id"
       @updateName="updateName"
+      @goToTimeline="goToTimeline"
     />
   </div>
 </template>
@@ -53,39 +54,43 @@ export default {
     },
     addClient() {
       const clients = this.clients;
-      const newClientID = this.postNewClient(newClient);
 
-      let newClient = {
-        name: "Client Name",
-        id: newClientID
+      const newClient = {
+        name: "Client Name"
       };
 
-      newClient = [{
-        ...newClient,
-        ...newClientID
-      }]
-
-      this.clients = [...newClient, ...clients];
+      this.postNewClient(newClient);
     },
     postNewClient(newClient) {
       axios
-        .post('/clients/new_client', newClient)
+        .post("/clients/new_client", newClient)
         .then(resp => {
           const newClientID = resp.data;
-          return newClientID;
+
+          const client = [{
+            ...newClient,
+            ...{ id: newClientID }
+          }];
+
+          const clients = this.clients;
+          this.clients = [...client, ...clients];
         })
         .catch(err => {
           console.error(err);
         });
     },
-    updateName(payload) {      
-      const { ["id"]: clientID, ...updatedClient} = payload;
+    updateName(payload) {
+      const { ["id"]: clientID, ...updatedClient } = payload;
 
       axios
         .post(`/clients/update_client_name/${clientID}`, updatedClient)
         .catch(err => {
           console.error(err);
-        })
+        });
+    },
+    goToTimeline(client) {
+      this.$store.commit("setClient", client);
+      this.$router.push({ name: "Timeline" });
     }
   },
   mounted() {

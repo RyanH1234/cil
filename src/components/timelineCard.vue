@@ -1,27 +1,29 @@
 <template>
   <div class="card" :style="height" v-bind:class="setCardStyling()">
     <div class="date">
-      <div class="padding" />
-      &#128336; 
+      <div class="padding" />&#128336;
       <timelineDatepicker :date="date" @updateDate="updateDate" />
     </div>
 
     <div class="summary" v-show="!toggled">
       <div class="padding" />
-      <input v-model="updatedSummary" />
+      <div class="save" @click="updateSummary()" v-if="summaryChanged">&#x1f5ab;</div>
+      <input v-model="updatedSummary" @input="summaryUpdated()" />
     </div>
 
     <div class="description" v-show="toggled">
       <div class="padding" />
-      <textarea v-model="updatedDescription" />
+      <textarea v-model="updatedDescription" @input="descriptionUpdated()"/>
     </div>
 
-    <div class="toggle" >
+    <div class="toggle">
       <div class="padding" />
-      <Button v-if="toggled" @click="doToggle()" >Hide Description</Button>
-      <Button v-else @click="doToggle()" >Show Description</Button>
+      <Button v-if="toggled" @click="doToggle()">Hide Description</Button>
+      <Button v-else @click="doToggle()">Show Description</Button>
 
-      <Button class="cancel" @click="cancel()" >Cancel</Button>
+      <Button class="delete" @click="deleteCard()">Delete</Button>
+      
+      <div class="save" @click="updateDescription()" v-if="descriptionChanged">&#x1f5ab;</div>
     </div>
   </div>
 </template>
@@ -35,11 +37,13 @@ export default {
       height: { height: "150px", "min-height": "150px" },
       toggled: false,
       updatedSummary: this.summary,
-      updatedDescription: this.description
+      updatedDescription: this.description,
+      summaryChanged: false,
+      descriptionChanged: false,
     };
   },
   components: {
-    timelineDatepicker,
+    timelineDatepicker
   },
   props: ["id", "position", "date", "summary", "description"],
   methods: {
@@ -57,16 +61,16 @@ export default {
 
       if (expandHeight) {
         const expandedHeight = {
-          "height": "300px",
+          height: "300px",
           "min-height": "300px"
         };
 
         this.height = expandedHeight;
         this.toggled = true;
       } else {
-        const collapsedHeight = { 
-          "height": "150px", 
-          "min-height": "150px" 
+        const collapsedHeight = {
+          height: "150px",
+          "min-height": "150px"
         };
 
         this.height = collapsedHeight;
@@ -75,25 +79,43 @@ export default {
     },
     updateDate(date) {
       const payload = {
-        "date": date,
-        "id": this.id,
-      }
+        date: date,
+        id: this.id
+      };
       this.$emit("updateDate", payload);
     },
-    cancel() {
+    deleteCard() {
       const payload = {
-        "id": this.id
+        id: this.id
       };
 
-      this.$emit("cancel", payload);
-    }
-  },
-  watch: {
-    updatedSummary() {
-      this.$emit("updateSummary");
+      console.dir(payload);
+
+      this.$emit("delete", payload);
     },
-    updatedDescription() {
-      this.$emit("updateDescription");
+    updateSummary() {
+      const payload = {
+        id: this.id,
+        summary: this.updatedSummary
+      };
+
+      this.$emit("updateSummary", payload);
+      this.summaryChanged = false;
+    },
+    updateDescription() {
+      const payload = {
+        id: this.id,
+        description: this.updatedDescription
+      }
+      
+      this.$emit("updateDescription", payload);
+      this.descriptionChanged = false;
+    },
+    summaryUpdated() {
+      this.summaryChanged = true;
+    },
+    descriptionUpdated() {
+      this.descriptionChanged = true;
     }
   }
 };
@@ -136,17 +158,38 @@ export default {
 .card .summary {
   display: flex;
   font-size: 25px;
-  align-self: flex-start;
+  align-items: baseline;
   width: 100%;
+  height: 50px;
   font-weight: 600;
   color: #292f36;
   letter-spacing: 0.5px;
 }
 
+.save {
+  font-weight: 600;
+  font-size: 25px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  margin-right: 10px;
+}
+
+.toggle .save {
+  flex-grow: 2;
+  display: flex;
+  justify-content: flex-end;
+}
+
+.save:hover {
+  cursor: pointer;
+}
+
 .summary input {
   display: flex;
+  justify-content: center;
+  align-items: center;
   font-size: 25px;
-  align-self: flex-start;
   width: 60%;
   font-weight: 600;
   color: #292f36;
@@ -211,7 +254,7 @@ export default {
   outline: none;
 }
 
-.toggle .cancel {
+.toggle .delete {
   margin-left: 10px;
 }
 
