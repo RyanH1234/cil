@@ -1,8 +1,8 @@
 <template>
   <div class="login">
-    Username
-    <div class="username">
-      <input type="text" v-model="username" :style="errStyling" />
+    Email
+    <div class="email">
+      <input type="text" v-model="email" :style="errStyling" />
     </div>Password
     <div class="password">
       <input type="password" v-model="password" :style="errStyling" />
@@ -15,13 +15,14 @@
 </template>
 
 <script>
-import firebase from "firebase";
+import axios from "axios";
+
 import ClipLoader from "vue-spinner/src/ClipLoader.vue";
 
 export default {
   data: () => {
     return {
-      username: "",
+      email: "",
       password: "",
       loading: false,
       errStyling: {}
@@ -32,25 +33,31 @@ export default {
   },
   methods: {
     login() {
-      const username = this.username;
+      const email = this.email;
       const password = this.password;
-      
+
+      const payload = {
+        email: email,
+        password: password
+      };
+
       this.loading = true;
 
-      // handles authentication and logging in via firebase
-      firebase
-        .auth()
-        .signInWithEmailAndPassword(username, password)
-        .then(payload => {
+      axios
+        .post("/login/", payload)
+        .then(resp => {
+          const data = resp.data;
+
           const user = {
-            uid: payload.user.uid,
-            email: payload.user.email
+            uid: data.user.uid,
+            email: data.user.email
           };
 
           this.clearError();
           this.loading = false;
 
           this.$store.commit("auth_success", user);
+
           this.goToClients();
         })
         .catch(err => {
@@ -60,8 +67,8 @@ export default {
     },
     setError() {
       this.errStyling = {
-        "border": "2px solid #9a2727"
-      }
+        border: "2px solid #9a2727"
+      };
     },
     clearError() {
       this.errStyling = {};
@@ -69,7 +76,7 @@ export default {
     goToClients() {
       this.$router.push({ name: "Clients" });
     }
-  },
+  }
 };
 </script>
 
@@ -101,7 +108,7 @@ export default {
   align-items: center;
 }
 
-.login .username,
+.login .email,
 .login .password {
   width: 100%;
   display: flex;
