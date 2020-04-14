@@ -14,6 +14,8 @@ Axios.defaults.baseURL = baseURL;
 
 Vue.config.productionTip = false
 
+console.dir(process.env);
+
 const firebaseConfig = {
   apiKey: process.env.VUE_APP_FIREBASE_KEY,
   authDomain: "mn-cli.firebaseapp.com",
@@ -24,9 +26,6 @@ const firebaseConfig = {
   appId: "1:747749105011:web:ea47a4f6b96c03370fb906",
   measurementId: "G-SSEZ6Z8X38"
 };
-
-console.dir(firebaseConfig);
-console.dir(process.env.VUE_APP_FIREBASE_KEY);
 
 firebase.initializeApp(firebaseConfig);
 
