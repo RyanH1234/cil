@@ -15,6 +15,12 @@ npm run serve
 npm run build
 ```
 
+### Running with Docker
+```
+docker build -t mn-cli-local
+docker run -p 3000:3000 mn-cli-local
+```
+
 ### Lints and fixes files
 ```
 npm run lint

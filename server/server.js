@@ -4,14 +4,18 @@ const bodyParser = require('body-parser');
 const clients = require('./clients');
 const timeline = require('./timeline');
 
+const dotenv = require('dotenv');
+dotenv.config();
+
 const cors = require('cors');
 
 const app = express();
-const port = process.env.PORT || 3000;
+const port = process.env.PORT || 3001;
 
 const admin = require("firebase-admin");
 
-const serviceAccount = require("./serviceAccountKey.json");
+let serviceAccount = process.env.SERVICE_ACCOUNT_KEY;
+serviceAccount = JSON.parse(serviceAccount);
 
 admin.initializeApp({
   credential: admin.credential.cert(serviceAccount),
