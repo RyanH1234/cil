@@ -9,7 +9,9 @@ import * as firebase from "firebase";
 import Axios from 'axios';
 
 Vue.prototype.$http = Axios;
-const baseURL = 'http://localhost:3001';
+
+const baseURL = process.env.NODE_ENV === 'production' ? 'https://mn-cil.herokuapp.com' : 'http://localhost:3001';
+
 Axios.defaults.baseURL = baseURL;
 
 Vue.config.productionTip = false
