@@ -14,11 +14,9 @@ const port = process.env.PORT || 3001;
 
 const admin = require("firebase-admin");
 
-console.dir(process.env);
-
 let serviceAccount = process.env.SERVICE_ACCOUNT_KEY;
 serviceAccount = JSON.parse(serviceAccount);
-
+ 
 admin.initializeApp({
   credential: admin.credential.cert(serviceAccount),
   databaseURL: "https://mn-cli-cc154.firebaseio.com"
