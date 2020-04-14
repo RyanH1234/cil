@@ -14,7 +14,8 @@ Axios.defaults.baseURL = baseURL;
 
 Vue.config.productionTip = false
 
-console.dir(process.env);
+const dotenv = require('dotenv')
+dotenv.config();
 
 const firebaseConfig = {
   apiKey: process.env.VUE_APP_FIREBASE_KEY,

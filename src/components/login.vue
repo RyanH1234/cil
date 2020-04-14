@@ -32,8 +32,6 @@ export default {
   },
   methods: {
     login() {
-      console.dir(process.env);
-
       const username = this.username;
       const password = this.password;
       
