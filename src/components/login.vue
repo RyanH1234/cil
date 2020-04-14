@@ -30,9 +30,6 @@ export default {
   components: {
     ClipLoader
   },
-  mounted() {
-    console.dir(process.env);
-  },
   methods: {
     login() {
       const username = this.username;
