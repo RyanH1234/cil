@@ -25,6 +25,9 @@ const firebaseConfig = {
   measurementId: "G-SSEZ6Z8X38"
 };
 
+console.dir(firebaseConfig);
+console.dir(process.env.VUE_APP_FIREBASE_KEY);
+
 firebase.initializeApp(firebaseConfig);
 
 new Vue({
